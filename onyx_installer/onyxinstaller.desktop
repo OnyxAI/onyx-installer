@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Onyx Installer
+Exec=/usr/share/onyx/onyxinstaller
+Icon=/usr/share/onyx/icon.png
+Type=Application
+Categories=AudioVideo;Video;Player;TV;
+
+X-KDE-SubstituteUID=true

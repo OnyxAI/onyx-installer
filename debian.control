@@ -1,0 +1,12 @@
+Origin: onyx
+Source: onyx-installer
+Section: tools
+Priority: optional
+Maintainer: Sam G Nazarko <contact@onyxlabs.fr>
+Build-Depends: debhelper (>= 4.1.16), libqt4-dev, zlib1g-dev
+
+Package: onyx-installer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, parted
+Recommends: gksu | kdesudo
+Description: onyx Installer allows you to install onyx on a variety of devices.

@@ -1,0 +1,5 @@
+obs/*
+onyx-installer.exe
+onyx-installer.dmg
+onyx_installer/debug/*
+onyx_installer/release/*

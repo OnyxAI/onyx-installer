@@ -1,0 +1,70 @@
+#Host installer
+Installer based on work of Sam in osmc installer !
+
+This installer is run on the system that images the system on the target device. It runs on Windows, OS X and Linux.
+
+Builds are performed statically:
+
+* On Windows, Qt static builds are performed to remove any dependency issues. There are no external libraries.
+* On Linux, Qt libraries are embedded into the executable. However, there are some external libraries: verify with ldd. The best to deploy is using the OpenSUSE implementation of Open Build Service (http://build.opensuse.org). This allows us to target multiple distributions without issue.
+* On OSX: Qt libraries are embedded into the executable. However, again, some libraries are bundled externally.
+
+## OS X Qt Static build
+
+Only tested on OS X Sierra:
+
+`brew install qt`
+
+Ad bin of qt to PATH
+
+`make osx`
+
+## Windows Qt static build ##
+
+Recommended: 32-bit Windows, as we don't get any benefit from x64 builds. We will build 32-bit Qt static libraries using MinGW32. You will also want to install WinRAR -- as we use this for creating the self-extracting tool which contains all the translations etc.
+
+* Download and install MinGW32, install it to C:\MinGW.
+* Install the defaults: MSYS and GCC, G++ compilers
+* Download the Qt-everywhere 4.8 source.
+* Extract the source to C:\MinGW32\qt
+
+Edit mkspecs\win32-g++\make.conf, ensure the CFLAGS_RELEASE line is:
+
+````QMAKE_CFLAGS_RELEASE	= -Os -momit-leaf-frame-pointer````
+
+Ensure we don't get issues with missing libgcc or libstdc++ DLLs by adding this line:
+
+````QMAKE_LFLAGS		= -static````
+
+Now, open a command prompt (cmd.exe). cd in to the C:\MinGW\qt\qt-everywhere-opensource-src-4.8.6 directory. Add MinGW binaries to your PATH:
+
+````
+PATH=%PATH%;C:\MinGW\bin
+````
+
+Now, let's configure:
+
+````configure.exe -release  -nomake examples -nomake demos -no-exceptions -no-stl -no-rtti -no-qt3support -no-scripttools -no-openssl -no-opengl -no-webkit -no-phonon -no-style-motif -no-style-cde -no-style-cleanlooks -no-style-plastique -no-sql-sqlite -static -platform win32-g++ -qt-libpng -opensource -confirm-license````
+
+Now, let's build:
+
+````mingw32-make -j8````
+
+Now, you have built Qt. Check make_host_win.sh to see where we expect everything to be in terms of PATHs, you may have to fix these.
+
+You also need the manfiest embedding tool, or we can't embed a requireAdministrator manifest. Download the [Windows 7 SDK] (https://www.microsoft.com/en-gb/download/details.aspx?id=8279). Target: Platform does not really matter. You need .NET 2.0.
+
+* Uncheck everything except for Tools
+* This takes approx 200M disk.
+
+If you now have C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin, you don't need to do anything. Otherwise, edit the PATH in make_host_win.sh again.
+
+### Building
+
+Now we can build any project by running 'make' followed by the platform name:
+
+* win - produces a Windows MinGW static build
+* osx - produces a OSX static DMG
+* obs - produces a source tarball and necessary files for Debian and RPM generation
+
+For Linux, we do packaging via OBS. However you can build a standard version with qmake && make.
