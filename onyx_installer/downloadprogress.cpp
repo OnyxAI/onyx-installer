@@ -83,6 +83,7 @@ void DownloadProgress::download(QUrl URL, bool isOnline)
         fchown(output.handle(),info.ownerId(),info.groupId());
 #endif
         QNetworkRequest request(URL);
+
         currentDownload = manager.get(request);
         connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),SLOT(downloadProgress(qint64,qint64)));
         connect(currentDownload, SIGNAL(finished()), SLOT(downloadFinished()));
@@ -122,6 +123,7 @@ void DownloadProgress::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
          utils::writeLog(currentDownload->errorString());
          failDownload(true);
      } else {
+
          utils::writeLog("Download successful");
          emit downloadCompleted(fileName);
      }
