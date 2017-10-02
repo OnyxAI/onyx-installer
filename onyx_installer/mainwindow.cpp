@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     spinner = new QMovie(":/assets/resources/spinner.gif");
     ui->spinnerLabel->setMovie(spinner);
     spinner->start();
-    this->mirrorURL = "http://download.onyxlabs.fr/sync";
+    this->mirrorURL = "http://download.onyxlabs.fr";
     utils::writeLog("Resolving a mirror");
     accessManager = new QNetworkAccessManager(this);
     connect(accessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
@@ -92,7 +92,8 @@ void MainWindow::rotateWidget(QWidget *oldWidget, QWidget *newWidget, bool enabl
 
 void MainWindow::replyFinished(QNetworkReply *reply)
 {
-    this->mirrorURL = "http://download.onyxlabs.fr/";
+    QVariant mirrorRedirectUrl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+    this->mirrorURL = mirrorRedirectUrl.toString();
     utils::writeLog("Resolved mirror to " + this->mirrorURL);
     reply->deleteLater();
     ui->spinnerLabel->hide();
